@@ -1,0 +1,64 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class BallMovement : MonoBehaviour {
+
+	private Rigidbody rBody;
+    public Text scoreText;
+    public Image winLossImage;
+    public Text winLossText;
+
+    public bool loss;
+
+    public float score = 0;
+
+	// Use this for initialization
+	void Start () {
+		rBody = GetComponent<Rigidbody> ();
+        loss = false;
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		float inputH = Input.GetAxis("Horizontal");
+		float inputV = Input.GetAxis("Vertical");
+
+		Vector3 move = new Vector3(inputH, 0f, inputV);
+        rBody.AddForce(move);
+
+        scoreText.text = " Your Score: " +score.ToString();
+
+        if(score >= 36 || loss == true)
+        {
+            winLossImage.gameObject.SetActive(true);
+            winLossText.text = "You Win!";
+
+            if(loss == true)
+            {
+                winLossText.text = "Game Over!";
+            }
+        }
+        else
+        {
+            winLossImage.gameObject.SetActive(false);
+
+        }
+	}
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "Pickup")
+        {
+            Destroy(other.gameObject);
+
+            score += 1;
+        }
+
+        if (other.gameObject.tag == "Enemy")
+        {
+            loss = true;
+        }
+    }
+}
